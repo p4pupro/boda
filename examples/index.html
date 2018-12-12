@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <meta name="description" content="Nuestra Boda WebApp">
+  <meta name="author" content="Domingo Pérez & Kenelma Rodriguez">
+  <title>Mito & Mita</title>
+
+   <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+   <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" href="mitamito.ico">
+
+    <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="assets/css/main.css" />
+  <!-- <link rel="stylesheet" href="estilo.css"> -->
+
+  <!-- <link rel="stylesheet" href="../styles.css"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="/__build__/Dropbox-sdk.min.js"></script>
+
+</head>
+
+
+<body class="container">
+
+
+  <!-- Banner -->
+  <section id="banner">
+      <h2><strong>Domingo & Kenelma</strong> Wedding</h2>
+      <p>Sube tus fotos a nuestro Dropbox.</p>
+      <ul class="actions">
+          <form onSubmit="return uploadFile();">
+              <input class="btn btn-info" type="file" multiple id="file-upload" />
+              <button class="btn btn-primary" type="submit">Subir</button>
+            </form>
+        
+            
+            <!-- A place to show the status of the upload -->
+            <h2 class="alert-success" id="results"></h2>
+      </ul>
+    </section>
+
+  <!-- Footer -->
+  <footer id="footer">
+      <div class="copyright">
+        &copy; MitoMita Wedding. Design: <a class="fa fa-github" href="https://github.com/p4pupro"> p4pupro</a>.
+      </div>
+    </footer>
+ 
+
+  
+ 
+  
+  <script> 
+    function uploadFile() {
+      
+      const UPLOAD_FILE_SIZE_LIMIT = 150 * 1024 * 1024;
+      var dbx = new Dropbox.Dropbox({ accessToken: '2Mh0yZtJjJ8AAAAAAAEJKnb5j51ZedTwlGSUrCLQDIAa-5dFO4wqufRR5mtCGjL7' });
+      var fileInput = document.getElementById('file-upload');
+      var fileList  = [];
+  
+       if ( fileInput.files.length >= 0 ) {
+          for ( var i = 0; i < fileInput.files.length; i++ ) {
+              fileList.push( fileInput.files[i] );
+          }  
+       }
+  
+  
+      for (var j = 0; j < fileList.length; j++) {
+  
+          if ( fileList[j].size < UPLOAD_FILE_SIZE_LIMIT ) { // File is smaller than 150 Mb - use filesUpload API
+              dbx.filesUpload({path: '/Boda2018/' + fileList[j].name, contents: fileList[j]})
+                  .then(function(response) {
+                      //  var results = document.getElementById('results');
+                      //  results.appendChild(document.createTextNode('Fotos subidas!'));
+                      console.log(response);
+                  })
+                  .catch(function(error) {
+                      console.error(error);
+                  });
+          } else {
+              // File is bigger than 150 Mb - use filesUploadSession* API
+              const maxBlob = 8 * 1000 * 1000; // 8Mb - Dropbox JavaScript API suggested max file / chunk size
+  
+              var workItems = [];     
+      
+              var offset = 0;
+  
+              while (offset < fileList[j].size) {
+                  var chunkSize = Math.min(maxBlob, fileList[j].size - offset);
+                  workItems.push(fileList[j].slice(offset, offset + chunkSize));
+                  offset += chunkSize;
+              }
+  
+              const task = workItems.reduce((acc, blob, idx, items) => {
+                  if (idx == 0) {
+                    // Starting multipart upload of file
+                    return acc.then(function() {
+                      return dbx.filesUploadSessionStart({ close: false, contents: blob})
+                                .then(response => response.session_id)
+                    });          
+                  } else if (idx < items.length-1) {  
+                    // Append part to the upload session
+                    return acc.then(function(sessionId) {
+                     var cursor = { session_id: sessionId, offset: idx * maxBlob };
+                     return dbx.filesUploadSessionAppendV2({ cursor: cursor, close: false, contents: blob }).then(() => sessionId); 
+                    });
+                  } else {
+                    // Last chunk of data, close session
+                    return acc.then(function(sessionId) {
+                      var cursor = { session_id: sessionId, offset: fileList[j].size - blob.size };
+                      var commit = { path: '/Boda2018/' + fileList[j].name, mode: 'add', autorename: true, mute: false };              
+                      return dbx.filesUploadSessionFinish({ cursor: cursor, commit: commit, contents: blob });           
+                    });
+                  }          
+                }, Promise.resolve());
+                
+                task.then(function(result) {
+                  //  var results = document.getElementById('results');
+                  //  results.appendChild(document.createTextNode('Fotos subidas!'));
+                  
+                }).catch(function(error) {
+                  console.error(error);
+                });
+                
+              }           
+      }
+      var results = document.getElementById('results');
+      results.appendChild(document.createTextNode('Fotos subidas!'));
+     
+      return false; 
+      
+    }
+  </script>
+
+  
+		<!-- Scripts -->
+      </script src="assets/js/jquery.min.js">
+      </script src="assets/js/skel.min.js">
+      </script src="assets/js/util.js">
+      </script src="assets/js/main.js">
+</body>
+</html>
