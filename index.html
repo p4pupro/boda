@@ -89,9 +89,12 @@
       var filesList = document.getElementById('files');
       var li;
       for (var i = 0; i < files.length; i++) {
-        li = document.createElement('li');
-        li.appendChild(document.createTextNode(files[i].name));
-        filesList.appendChild(li);
+          li = document.createElement('li');
+		      img = document.createElement('img');
+          li.appendChild(document.createTextNode(files[i].name));
+		      img.src = files[i].path_display;
+          filesList.appendChild(li);
+		      filesList.appendChild(img);
       }
     }
 
