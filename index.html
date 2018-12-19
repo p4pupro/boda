@@ -86,16 +86,21 @@
     }
 
 	function displayFiles(files) {
+	  var dbx = new Dropbox.Dropbox({ accessToken: '2Mh0yZtJjJ8AAAAAAAEJKnb5j51ZedTwlGSUrCLQDIAa-5dFO4wqufRR5mtCGjL7' });
       var filesList = document.getElementById('files');
-      var li;
+      var li, img;
       for (var i = 0; i < files.length; i++) {
-          li = document.createElement('li');
-		      img = document.createElement('img');
-          li.appendChild(document.createTextNode(files[i].name));
-		      img.src = files[i].name;
-          filesList.appendChild(li);
-		      filesList.appendChild(img);
-      }
+        li = document.createElement('li');
+		    img = document.createElement('img');
+        li.appendChild(document.createTextNode(files[i].name));
+		    dbx.get_temporary_link({path: files[i].path_display})
+		       .then(function(response) {
+              console.log('response', response);
+		  	      img.src = response.link;
+		    });
+		   }
+       filesList.appendChild(li);
+		   filesList.appendChild(img);
     }
 
     function uploadFile() {
