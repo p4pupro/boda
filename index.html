@@ -43,6 +43,10 @@
             <!-- A place to show the status of the upload -->
             <h2 class="alert-success" id="results" style="display: none;"></h2>
       </ul>
+  
+       <!-- list files in folder -->
+      <button class="btn btn-primary" type="button" onclick="listFiles()">Ver</button>
+	    <ul id="files"></ul>
     </section>
 
   <!-- Footer -->
@@ -65,7 +69,31 @@
       } else {
           bt.disabled = true;
       }
-    } 
+    }
+    
+    function listFiles(e) {
+	var dbx = new Dropbox.Dropbox({ accessToken: '2Mh0yZtJjJ8AAAAAAAEJKnb5j51ZedTwlGSUrCLQDIAa-5dFO4wqufRR5mtCGjL7' });
+	console.log('dbx', dbx);
+      dbx.filesListFolder({path: 'Aplicaciones/mitamito/Boda2018'})
+        .then(function(response) {
+          console.log('response', response)
+          displayFiles(response.entries);
+          console.log(response);
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
+    }
+
+	function displayFiles(files) {
+      var filesList = document.getElementById('files');
+      var li;
+      for (var i = 0; i < files.length; i++) {
+        li = document.createElement('li');
+        li.appendChild(document.createTextNode(files[i].name));
+        filesList.appendChild(li);
+      }
+    }
 
     function uploadFile() {
       
