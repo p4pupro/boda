@@ -74,7 +74,7 @@
     function listFiles(e) {
 	var dbx = new Dropbox.Dropbox({ accessToken: '2Mh0yZtJjJ8AAAAAAAEJKnb5j51ZedTwlGSUrCLQDIAa-5dFO4wqufRR5mtCGjL7' });
 	console.log('dbx', dbx);
-      dbx.filesListFolder({path: '/Aplicaciones/mitamito/Boda2018'})
+      dbx.filesListFolder({path: ''})
         .then(function(response) {
           console.log('response', response)
           displayFiles(response.entries);
