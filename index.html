@@ -93,7 +93,7 @@
         li = document.createElement('li');
 		    img = document.createElement('img');
         li.appendChild(document.createTextNode(files[i].name));
-		    dbx.getTemporaryLink({path: files[i].path_display})
+		    dbx.filesGetTemporaryLink({path: files[i].path_display})
 		       .then(function(response) {
               console.log('response', response);
 		  	      img.src = response.link;
