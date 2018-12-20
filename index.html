@@ -45,8 +45,9 @@
       </ul>
   
        <!-- list files in folder -->
-      <button class="btn btn-primary" type="button" onclick="listFiles()">Ver</button>
-	    <ul id="files"></ul>
+	  <button class="btn btn-primary" id="showImages" type="button" onclick="listFiles()">Ver</button>
+	  <div id="files">
+	  </div>
     </section>
 
   <!-- Footer -->
@@ -97,8 +98,9 @@
 				    filesList.appendChild(window['img']);	
 		      });		
 	    }
-	    var btnVer = document.getElementById('showImages').style;
-	    btnVer.display = "none";
+	    var btnVer = document.getElementById('showImages');
+      btnVer.style.disabled;
+	    btnVer.style.display = "none";
     }
 
     function uploadFile() {
