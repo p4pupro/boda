@@ -85,22 +85,21 @@
         });
     }
 
-	function displayFiles(files) {
+		function displayFiles(files) {
 	  var dbx = new Dropbox.Dropbox({ accessToken: '2Mh0yZtJjJ8AAAAAAAEJKnb5j51ZedTwlGSUrCLQDIAa-5dFO4wqufRR5mtCGjL7' });
       var filesList = document.getElementById('files');
-      var li, img;
       for (var i = 0; i < files.length; i++) {
-        li = document.createElement('li');
-		    img = document.createElement('img');
-        li.appendChild(document.createTextNode(files[i].name));
-		    dbx.filesGetTemporaryLink({path: files[i].path_display})
-		       .then(function(response) {
-              console.log('response', response);
-		  	      img.src = response.link;
-		    });
-		   }
-       filesList.appendChild(li);
-		   filesList.appendChild(img);
+		window['img']='img'+i;
+		dbx.filesGetTemporaryLink({path: files[i].path_display})
+		    .then(function(response) {
+				window['img'] = document.createElement('img');
+				window['img'].src = response.link;
+				filesList.appendChild(window['img']);	
+		    });		
+	  }
+	   var btnVer = document.getElementById('showImages');
+	   btnVer.style.disabled;
+	   btnVer.style.display = "none";
     }
 
     function uploadFile() {
