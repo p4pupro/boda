@@ -179,8 +179,11 @@
       var results = document.getElementById('results');
       results.appendChild(document.createTextNode('Fotos subidas!'));
       results.style.display = 'block';
-      return false; 
-      
+      setTimeout(function() { 
+		    results.style.display = 'none';
+		  }, 3000);
+   
+      return false;  
     }
   </script>
 
