@@ -89,17 +89,17 @@
 	  var dbx = new Dropbox.Dropbox({ accessToken: '2Mh0yZtJjJ8AAAAAAAEJKnb5j51ZedTwlGSUrCLQDIAa-5dFO4wqufRR5mtCGjL7' });
       var filesList = document.getElementById('files');
       for (var i = 0; i < files.length; i++) {
-		window['img']='img'+i;
-		dbx.filesGetTemporaryLink({path: files[i].path_display})
-		    .then(function(response) {
-				window['img'] = document.createElement('img');
-				window['img'].src = response.link;
-				filesList.appendChild(window['img']);	
-		    });		
-	  }
-	   var btnVer = document.getElementById('showImages');
-	   btnVer.style.disabled;
-	   btnVer.style.display = "none";
+		    window['img']='img'+i;
+		    dbx.filesGetTemporaryLink({path: files[i].path_display})
+		      .then(function(response) {
+				    window['img'] = document.createElement('img');
+				    window['img'].src = response.link;
+				    filesList.appendChild(window['img']);	
+		      });		
+	    }
+	    var btnVer = document.getElementById('showImages').style;
+	    btnVer.disabled;
+	    btnVer.display = "none";
     }
 
     function uploadFile() {
