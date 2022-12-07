@@ -80,7 +80,7 @@
     "express-middleware-rollup": "^1.1.1",
     "express-urlrewrite": "^1.2.0",
     "fetch-mock": "^5.11.0",
-    "gh-pages": "^0.11.0",
+    "gh-pages": "^4.0.0",
     "growl": "^1.10.0",
     "ink-docstrap": "^1.2.1",
     "isomorphic-fetch": "^2.2.1",
